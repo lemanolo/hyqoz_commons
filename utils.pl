@@ -105,6 +105,13 @@ unique([Head|Tail],[Head|UTail]):-
 	delete(Tail,Head,Tail2),
 	unique(Tail2,UTail).
 
+append_all([],[]):-!.
+append_all([Head|Tail],NewL):-
+       append_all(Tail,SubNewL),
+       append(Head,SubNewL,NewL).
+
+
+
 intersection([X|Y],M,[X|Z]) :- member(X,M), intersection(Y,M,Z).
 intersection([X|Y],M,Z) :- \+ member(X,M), intersection(Y,M,Z).
 intersection([],_,[]).
@@ -282,3 +289,10 @@ concat_all_atoms([Atom|Tail],RAtom):-!,
 	concat_all_atoms(Tail,Suffix),
 	atom_concat(Atom,Suffix,RAtom).
 
+my_new_atom(Prefix,0,Prefix):-!.
+my_new_atom(Prefix,Length,NewAtom):-
+       new_atom(Prefix,NewSubAtom),
+       atom_concat(Prefix,Suffix,NewSubAtom),
+       atom_length(Suffix,1),
+       Length2 is Length-1,
+       my_new_atom(NewSubAtom,Length2,NewAtom),!.
